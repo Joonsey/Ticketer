@@ -114,7 +114,7 @@ async def reset_data(ctx):
 async def update(ctx, *args):
     """expects: ( id : int, type : (ctx || author || state), newInput : str)"""
     if args[1].lower() in ["context", "kontekst", "ctx", "info", "data"]:
-        changeCtx(int(args[0]), args[2])
+        changeCtx(int(args[0]), args[2:])
     elif args[1].lower() in ['author', 'eier', 'auth', 'owner']:
         changeAuth(int(args[0]), args[2])
     elif args[1].lower() in ['state','solved','løst','solvedstate','solved_state','issolved','ferdig','fikset']:
