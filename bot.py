@@ -2,7 +2,8 @@ import discord, asyncio
 from discord.ext import commands, tasks
 from Tickets import Ticket
 from database import *
-from secrets import TOKEN
+from secrets import TOKEN 
+# make a secrets.py with a variable named "TOKEN" for the discord key.
 
 client = commands.Bot(command_prefix='.')
 
