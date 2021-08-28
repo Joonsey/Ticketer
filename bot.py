@@ -1,4 +1,5 @@
 import discord, asyncio
+from discord import embeds
 from discord.ext import commands, tasks
 from Tickets import Ticket
 from database import *
@@ -54,7 +55,7 @@ async def submit(ctx, *args):
     #TODO author.id in a hashtable is optimal 
 
     embed = discord.Embed(title=f"Entry added to table with id {id}.", color=MAIN_COLOR)
-    embed.add_field(name="added entry: ",value=f"**id: ** {t.id} \n **date and time: **{t.date} \n **context: **{t.context} \n **author: **{t.author} \n **solved: ** {str(t.solved)}", inline=False)
+    embed.add_field(name="added entry: ",value=f"**id: ** {t.id} \n **date: **{t.date[0:10]}  \n **time: **{t.date[10:]} \n **context: **{t.context} \n **author: **{t.author} \n **solved: ** {str(t.solved)}", inline=False)
     embed.set_thumbnail(url=checked_box)
     await ctx.reply(embed=embed)
 
@@ -64,16 +65,23 @@ async def submit(ctx, *args):
 @client.command(aliases=["rmv","delete","del"])
 async def remove(ctx, arg):
     arg = int(arg)
+    embed = discord.Embed(title="Remove ticket.")
     if fetchTicket(arg):
         removeTicketById(arg)
-        await ctx.reply('removal succesful!')
+        embed.set_thumbnail(url=rocket_box)
+        embed.color = MAIN_COLOR
+        embed.add_field(name="Succesful!", value="Ticket has been removed from the database")
     else:
-        await ctx.reply('removal unsuccsesful, ticket does not exist.')
+        embed.set_thumbnail(url=rocket_box) # TODO get a error image
+        embed.color = ERROR_COLOR
+        embed.add_field(name="Failed!", value="Ticket with that ID does not exist.")
+
+    await ctx.reply(embed=embed)
     
 
 @client.command(aliases=["list", "show"])
 async def entries(ctx):
-    embed = discord.Embed(title="All entries in table", description="""**id | date & time | context | author | state**""", color=MAIN_COLOR)
+    embed = discord.Embed(title="All entries in table", description="""**id | date | time | context | author | state**""", color=MAIN_COLOR)
     async with ctx.channel.typing():
         d = list(fetchAllTickets())
         if len(d) > 0:
@@ -81,8 +89,8 @@ async def entries(ctx):
             #for i in d:
             #    data += str(i) + "\n "
             for x, y in enumerate(d):
-                embed.add_field(name="entry #" + str(x+1), 
-                value=f"**id: ** {y[0]} \n **date and time: **{y[1]} \n **context: **{y[2]} \n **author: **{y[3]} \n **solved: ** {y[4]}", inline=True)
+                embed.add_field(name="> Ticket #" + str(x+1), 
+                value=f"**id: ** {y[0]} \n **date: ** {y[1][0:10]} \n **time: **{y[1][10:]} \n **context: **{y[2]} \n **author: **{y[3]} \n **solved: ** {y[4]}", inline=True)
                 embed.set_thumbnail(url=open_box)
             await ctx.send(embed=embed)
             #await ctx.send("""**id | date | time | context | author | state** \n""" + data)
@@ -102,7 +110,28 @@ async def reset_data(ctx):
         await ctx.reply('insufficient permitions.')
 
 
-@client.command()
+@client.command(aliases=['change', 'swap'])
+async def update(ctx, *args):
+    """expects: ( id : int, type : (ctx || author || state), newInput : str)"""
+    if args[1].lower() in ["context", "kontekst", "ctx", "info", "data"]:
+        changeCtx(int(args[0]), args[2])
+    elif args[1].lower() in ['author', 'eier', 'auth', 'owner']:
+        changeAuth(int(args[0]), args[2])
+    elif args[1].lower() in ['state','solved','løst','solvedstate','solved_state','issolved','ferdig','fikset']:
+        try:
+            changeSolved(int(args[0]), args[2].lower().capitalize())
+        except ValueError:
+            await ctx.send('Provide either True or False for this value.')
+    else:
+        await ctx.send('Please give a valid input')
+
+    # TODO embed
+    # verification
+    # error message
+    # help UI with example
+
+
+@client.command(hidden=True)
 async def embed_test(ctx):
     embed = discord.Embed(title="Sample Embed",
     url="https://github.com/Joonsey/Ticketer",
