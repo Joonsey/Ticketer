@@ -36,6 +36,7 @@ def fetchTicket(id):
             return c.fetchall()
         except:
             print('entry does not exists or id is out of range.')
+            return 0
 
 
 def fetchAllTickets(author=0, orderByTime=False):
@@ -63,7 +64,7 @@ def wipeDB():
             print('Wipe unsuccessful.')
 
 
-def changeSolved(id, newValue):
+def changeSolved(id, newValue: bool):
     with conn:
         if type(id) == int:
             try:
@@ -74,8 +75,12 @@ def changeSolved(id, newValue):
                 WHERE id = :id
                 """,
                 {"old":old[0][-1], "new":str(newValue), "id":id})
+                return 1
             except:
                 print('Change failed.')
+                return 0
+        else:
+            return 0
 
 
 def changeCtx(id, newCtx):
@@ -89,11 +94,15 @@ def changeCtx(id, newCtx):
                 WHERE id = :id
                 """,
                 {"old":old[0][-3], "new":str(newCtx), "id":id})
+                return 1
             except:
                 print('Change failed.')
-                
+                return 0
+        else:
+            return 0
+                        
 
-def changeAuthor(id, newAuthor):
+def changeAuth(id, newAuthor):
     with conn:
         if type(id) == int:
             try:
@@ -104,8 +113,12 @@ def changeAuthor(id, newAuthor):
                 WHERE id = :id
                 """,
                 {"old":old[0][-2], "new":str(newAuthor), "id":id})
+                return 1
             except:
                 print('Change failed.')
+                return 0
+        else:
+            return 0
 
 
 def removeTicketById(id):
