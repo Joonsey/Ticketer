@@ -20,6 +20,9 @@ normal_box = "https://cdns.iconmonstr.com/wp-content/assets/preview/2019/240/ico
 rocket_box = "https://cdns.iconmonstr.com/wp-content/assets/preview/2019/240/iconmonstr-product-5.png"
 box_hand = "https://cdns.iconmonstr.com/wp-content/assets/preview/2019/240/iconmonstr-product-13.png"
 box_idea = "https://cdns.iconmonstr.com/wp-content/assets/preview/2019/240/iconmonstr-product-7.png"
+error_img = "https://cdns.iconmonstr.com/wp-content/assets/preview/2018/240/iconmonstr-x-mark-circle-thin.png"
+shield_with_cross = "https://cdns.iconmonstr.com/wp-content/assets/preview/2018/240/iconmonstr-shield-2-thin.png"
+shield_with_check = "https://cdns.iconmonstr.com/wp-content/assets/preview/2018/240/iconmonstr-shield-1-thin.png"
 # Bless you iconmonstr.com
 
 
@@ -72,7 +75,7 @@ async def remove(ctx, arg):
         embed.color = MAIN_COLOR
         embed.add_field(name="Succesful!", value="Ticket has been removed from the database")
     else:
-        embed.set_thumbnail(url=rocket_box) # TODO get a error image
+        embed.set_thumbnail(url=error_img) # TODO get a error image
         embed.color = ERROR_COLOR
         embed.add_field(name="Failed!", value="Ticket with that ID does not exist.")
 
