@@ -87,13 +87,17 @@ def changeCtx(id, newCtx):
     with conn:
         if type(id) == int:
             try:
+                newString = ""
+                for i in newCtx:
+                    newString += i+" "
+
                 old = fetchTicket(id)
                 c.execute("""
                 UPDATE ticket
                 SET context = replace(context, :old, :new)
                 WHERE id = :id
                 """,
-                {"old":old[0][-3], "new":str(newCtx), "id":id})
+                {"old":old[0][-3], "new":newString, "id":id})
                 return 1
             except:
                 print('Change failed.')
